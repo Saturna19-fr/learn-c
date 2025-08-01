@@ -11,16 +11,23 @@ typedef struct
 Task tasks[MAX_TASKS];
 int task_nb = 0;
 
+void CleanBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF); // vide le buffer jusqu'à la fin de ligne
+}
+
+
 //par chatgpt
+
 void wait_for_enter() {
     int c;
 
     // Clear leftover input until newline or EOF
-    while ((c = getchar()) != '\n' && c != EOF);
+    CleanBuffer();
 
     // Wait for the actual Enter key
     printf("Press Enter to continue...");
-    while ((c = getchar()) != '\n' && c != EOF);
+    CleanBuffer();
 }
 
 
@@ -50,7 +57,7 @@ void PrintAllTasks()
     int taskAlreadyExists = AnyTaskAlreadyRegistred();
     if (taskAlreadyExists == 1)
     {
-        printf("Des taches existent !\n");
+        printf("exists !\n");
         for (int i = 0; i < task_nb; i++)
         {
             printf("%s\n", tasks[i].description);
@@ -59,7 +66,7 @@ void PrintAllTasks()
     }
     else
     {
-        printf("Aucune tache n'existe\n");
+        printf("No tasks existing\n");
         Task task1;
         strcpy(task1.description, "test");
         tasks[task_nb] = task1;
@@ -67,26 +74,41 @@ void PrintAllTasks()
     }
 };
 
-void DisplayMenu(){
-    printf("1 - Ajouter une tâche\n");
-    printf("2 - Supprimer une tâche\n");
-    printf("3 - Afficher les tâches\n");
-    printf("4 - Quitter\n\n");
+void AddTask() {
 
-    printf("Choisissez une option:\n> ");
+    printf("Select a name for the task\n> ");
+    char task_name[MAX_DESC_LENGTH];
+    fgets(task_name, sizeof(task_name), stdin);
+    // On crée une task.
+    Task new_task;
+    strcpy(new_task.description, task_name);
+    tasks[task_nb] = new_task;
+    task_nb++;
+
+};
+
+void DisplayMenu(){
+    printf("1 - Add a task\n");
+    printf("2 - Delete a task\n");
+    printf("3 - Display tasks\n");
+    printf("4 - Leave\n\n");
+
+    printf("Choose an option:\n> ");
 
 }
 
 int main()
 {
     int running = 1;
-    printf("Bienvenue sur le système de planning :)\n");
+    printf("Welcome in the todolist system :)\n");
     while (running){
-        DisplayMenu();
-        int choice;
-        scanf("%d", &choice);
+        DisplayMenu(); // Shows the menu (1 to 4)
+        char buff[5];
+        fgets(buff, sizeof(buff), stdin);
+        int choice = atoi(buff);
         if (choice == 1)
         {
+            AddTask();
             printf("Not implemented yet.\n");
         }
         else if (choice == 2)
@@ -98,11 +120,11 @@ int main()
             PrintAllTasks();
             main();
         }
-        else
+        /*else
         {
             running = 0;
             printf("Au revoir.\n");
-        }
+        }*/
     }
 
 
